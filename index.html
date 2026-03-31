@@ -1,180 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KKIA Binder Operation</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            color: #333;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KKIA Control Panel</title>
 
-        /* Top-left KKIA */
-        .kkia-logo {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            font-weight: bold;
-            font-size: 24px;
-            color: #fff;
-            background-color: rgba(0,0,0,0.5);
-            padding: 8px 12px;
-            border-radius: 8px;
-            z-index: 1000;
-            letter-spacing: 2px;
-        }
+<style>
+:root {
+    --primary: #6a11cb;
+    --secondary: #2575fc;
+    --accent: #00c9a7;
+    --danger: #ff4d4d;
+}
 
-        header {
-            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            text-align: center;
-            padding: 30px 0;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #2b5876);
+    color: white;
+}
 
-        .container {
-            max-width: 450px;
-            margin: 80px auto;
-            background: rgba(255,255,255,0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
+header {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    padding: 20px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+}
 
-        .container:hover {
-            transform: scale(1.02);
-        }
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    background: rgba(0,0,0,0.4);
+    padding: 10px;
+}
 
-        input[type="text"], input[type="password"] {
-            width: 85%;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 8px;
-            border: 2px solid #6a11cb;
-            font-size: 16px;
-            transition: border 0.3s ease, box-shadow 0.3s ease;
-        }
+nav button {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #2575fc;
-            box-shadow: 0 0 8px #2575fc;
-            outline: none;
-        }
+nav button:hover {
+    background: white;
+    color: black;
+}
 
-        button {
-            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            margin-top: 12px;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
+.page {
+    display: none;
+    padding: 20px;
+}
 
-        button:hover {
-            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
-            transform: scale(1.05);
-        }
+.active {
+    display: block;
+}
 
-        .hidden {
-            display: none;
-        }
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 15px auto;
+    max-width: 600px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
 
-        ul.steps {
-            list-style-type: decimal;
-            padding-left: 25px;
-            text-align: left;
-            color: #444;
-        }
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+}
 
-        #statusMessage {
-            margin-top: 15px;
-            font-weight: bold;
-            color: #2575fc;
-        }
-    </style>
+button.action {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button.action:hover {
+    opacity: 0.8;
+}
+
+.log {
+    max-height: 200px;
+    overflow-y: auto;
+    background: black;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: var(--accent);
+}
+
+</style>
 </head>
+
 <body>
-    <div class="kkia-logo">KKIA</div>
-    <header>
-        Binder Securing Operation
-    </header>
 
-    <!-- Login Form -->
-    <div class="container" id="loginContainer">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username"><br>
-        <input type="password" id="password" placeholder="Password"><br>
-        <button id="loginBtn">Login</button>
-        <p id="loginMessage" class="hidden" style="color:red;"></p>
-    </div>
+<header>KKIA CONTROL PANEL</header>
 
-    <!-- Operation Steps -->
-    <div class="container hidden" id="operationContainer">
-        <h2>Step-by-Step Procedure</h2>
-        <ul class="steps" id="steps-list">
-            <li>Identify the binder location.</li>
-            <li>Ensure the area is safe and secure.</li>
-            <li>Wear proper protective gear.</li>
-            <li>Carefully take down the binder.</li>
-            <li>Secure binder in approved container.</li>
-            <li>Document the operation for audit purposes.</li>
-        </ul>
-        <button id="startBtn">Start Operation</button>
-        <p id="statusMessage" class="hidden"></p>
-    </div>
+<nav>
+<button onclick="showPage('login')">Login</button>
+<button onclick="showPage('dashboard')">Dashboard</button>
+<button onclick="showPage('operations')">Operations</button>
+<button onclick="showPage('reports')">Reports</button>
+<button onclick="showPage('settings')">Settings</button>
+</nav>
 
-    <script>
-        const loginBtn = document.getElementById('loginBtn');
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const loginMessage = document.getElementById('loginMessage');
-        const loginContainer = document.getElementById('loginContainer');
-        const operationContainer = document.getElementById('operationContainer');
+<!-- LOGIN -->
+<div id="login" class="page active">
+<div class="card">
+<h2>Login</h2>
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+<button class="action" onclick="login()">Login</button>
+<p id="loginMsg"></p>
+</div>
+</div>
 
-        // Static credentials
-        const validUsername = "admin";
-        const validPassword = "binder123";
+<!-- DASHBOARD -->
+<div id="dashboard" class="page">
+<div class="card">
+<h2>Dashboard</h2>
+<p>Status: <span class="badge">Active</span></p>
+<p>Operations Completed: <span id="opsCount">0</span></p>
+</div>
+</div>
 
-        loginBtn.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value.trim();
-            if(username === validUsername && password === validPassword) {
-                loginContainer.classList.add('hidden');
-                operationContainer.classList.remove('hidden');
-            } else {
-                loginMessage.textContent = "Invalid username or password";
-                loginMessage.classList.remove('hidden');
-            }
-        });
+<!-- OPERATIONS -->
+<div id="operations" class="page">
+<div class="card">
+<h2>Operation Steps</h2>
+<ul id="steps"></ul>
+<button class="action" onclick="nextStep()">Next Step</button>
+<p id="opStatus"></p>
+</div>
+</div>
 
-        // Step-by-step operation flow
-        const startBtn = document.getElementById('startBtn');
-        const statusMessage = document.getElementById('statusMessage');
-        const steps = document.querySelectorAll('#steps-list li');
-        let currentStep = 0;
+<!-- REPORTS -->
+<div id="reports" class="page">
+<div class="card">
+<h2>Create Report</h2>
+<textarea id="reportText" placeholder="Write report..."></textarea>
+<button class="action" onclick="saveReport()">Save Report</button>
+<div class="log" id="reportLog"></div>
+</div>
+</div>
 
-        startBtn.addEventListener('click', () => {
-            if(currentStep < steps.length) {
-                statusMessage.textContent = `Executing: ${steps[currentStep].textContent}`;
-                statusMessage.classList.remove('hidden');
-                currentStep++;
-                startBtn.textContent = currentStep < steps.length ? "Next Step" : "Complete Operation";
-            } else {
-                statusMessage.textContent = "Operation successfully completed and binder secured.";
-                startBtn.disabled = true;
-            }
-        });
-    </script>
+<!-- SETTINGS -->
+<div id="settings" class="page">
+<div class="card">
+<h2>Settings</h2>
+<select onchange="changeTheme(this.value)">
+<option value="dark">Dark</option>
+<option value="light">Light</option>
+</select>
+</div>
+</div>
+
+<script>
+let loggedIn = false;
+let stepIndex = 0;
+let opsCompleted = 0;
+
+const stepsData = [
+"Locate binder",
+"Secure area",
+"Wear gear",
+"Retrieve binder",
+"Seal container",
+"Document evidence"
+];
+
+function showPage(page) {
+    if (!loggedIn && page !== 'login') return alert('Login first');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+}
+
+function login() {
+    if(document.getElementById('user').value === 'admin' && document.getElementById('pass').value === 'binder123'){
+        loggedIn = true;
+        showPage('dashboard');
+    } else {
+        document.getElementById('loginMsg').textContent = 'Invalid login';
+    }
+}
+
+function renderSteps() {
+    const ul = document.getElementById('steps');
+    ul.innerHTML = '';
+    stepsData.forEach((step, i) => {
+        const li = document.createElement('li');
+        li.textContent = step;
+        if(i < stepIndex) li.style.color = 'lime';
+        ul.appendChild(li);
+    });
+}
+
+function nextStep() {
+    if(stepIndex < stepsData.length) {
+        document.getElementById('opStatus').textContent = "Executing: " + stepsData[stepIndex];
+        stepIndex++;
+        renderSteps();
+    } else {
+        document.getElementById('opStatus').textContent = "Operation Complete";
+        opsCompleted++;
+        document.getElementById('opsCount').textContent = opsCompleted;
+        stepIndex = 0;
+        renderSteps();
+    }
+}
+
+function saveReport() {
+    const text = document.getElementById('reportText').value;
+    if(!text) return;
+    const log = document.getElementById('reportLog');
+    const entry = document.createElement('div');
+    entry.textContent = new Date().toLocaleString() + ": " + text;
+    log.prepend(entry);
+}
+
+function changeTheme(mode) {
+    if(mode === 'light') {
+        document.body.style.background = '#f5f5f5';
+        document.body.style.color = 'black';
+    } else {
+        document.body.style.background = 'linear-gradient(135deg, #1e1e2f, #2b5876)';
+        document.body.style.color = 'white';
+    }
+}
+
+renderSteps();
+</script>
+
 </body>
 </html>
