@@ -3,160 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KKIA ELITE SYSTEM</title>
+<title>KKIA NUCLEAR SYSTEM</title>
 
 <style>
 :root{--p:#6a11cb;--s:#2575fc;--a:#00ffc6;--d:#ff4d4d}
-body{margin:0;font-family:Segoe UI;background:radial-gradient(circle,#0f2027,#203a43,#2c5364);color:white}
-header{padding:15px;text-align:center;font-size:26px;background:linear-gradient(90deg,var(--p),var(--s));letter-spacing:2px}
-nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#0006;padding:10px}
-nav button{border:1px solid white;background:none;color:white;padding:6px 10px;border-radius:6px;cursor:pointer}
-nav button:hover{background:white;color:black}
-.page{display:none;padding:15px}.active{display:block}
-.card{background:#ffffff10;border:1px solid #ffffff20;border-radius:12px;padding:15px;margin:10px auto;max-width:800px;backdrop-filter:blur(10px)}
-input,textarea,select{width:100%;margin:6px 0;padding:8px;border-radius:6px;border:none}
-button.action{background:linear-gradient(90deg,var(--p),var(--s));border:none;color:white;padding:8px;border-radius:6px;cursor:pointer}
-.log{background:black;max-height:180px;overflow:auto;padding:8px;font-size:13px}
-.badge{background:var(--a);padding:3px 8px;border-radius:5px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.alert-pop{position:fixed;top:20px;right:20px;background:red;padding:10px;border-radius:8px;display:none}
+body{margin:0;font-family:Consolas,monospace;background:black;color:#00ff9c}
+header{padding:12px;text-align:center;background:#000;border-bottom:1px solid #00ff9c}
+nav{display:flex;gap:6px;justify-content:center;background:#000;padding:6px}
+nav button{background:#000;border:1px solid #00ff9c;color:#00ff9c;padding:5px 10px;cursor:pointer}
+nav button:hover{background:#00ff9c;color:black}
+.page{display:none;padding:10px}.active{display:block}
+.card{border:1px solid #00ff9c;padding:10px;margin:10px auto;max-width:800px}
+input,textarea{width:100%;background:black;color:#00ff9c;border:1px solid #00ff9c;margin:5px 0}
+button.action{background:#00ff9c;color:black;border:none;padding:6px;cursor:pointer}
+.log{max-height:150px;overflow:auto;border:1px solid #00ff9c;padding:5px}
+.progress{height:10px;background:#003333;margin:10px 0}
+.progress-bar{height:10px;background:#00ff9c;width:0%}
+.map{height:200px;background:#001111;position:relative}
+.dot{width:6px;height:6px;background:red;position:absolute;border-radius:50%}
+.terminal{background:black;height:200px;overflow:auto;padding:5px;border:1px solid #00ff9c}
+.popup{position:fixed;top:10px;right:10px;background:red;padding:8px;display:none}
 </style>
 </head>
 <body>
-<header>KKIA ELITE OPS TERMINAL</header>
-<div class="alert-pop" id="popup"></div>
+<header>KKIA NUCLEAR TERMINAL</header>
+<div class="popup" id="popup"></div>
 
 <nav>
 <button onclick="nav('login')">Login</button>
 <button onclick="nav('dashboard')">Dashboard</button>
-<button onclick="nav('operations')">Operations</button>
+<button onclick="nav('operations')">Ops</button>
 <button onclick="nav('cases')">Cases</button>
 <button onclick="nav('alerts')">Alerts</button>
+<button onclick="nav('map')">Map</button>
+<button onclick="nav('terminal')">Terminal</button>
 <button onclick="nav('admin')">Admin</button>
 </nav>
 
-<!-- LOGIN -->
-<div id="login" class="page active">
-<div class="card">
-<h2>Auth System</h2>
-<input id="user" placeholder="Username">
-<input id="pass" type="password" placeholder="Password">
+<div id="login" class="page active"><div class="card">
+<h3>Auth</h3>
+<input id="user" placeholder="user"><input id="pass" type="password" placeholder="pass">
 <select id="role"><option>Agent</option><option>Admin</option><option>Director</option></select>
-<button class="action" onclick="register()">Register</button>
-<button class="action" onclick="login()">Login</button>
-<p id="msg"></p>
+<button onclick="register()">Register</button><button onclick="login()">Login</button>
+<p id="msg"></p></div></div>
+
+<div id="dashboard" class="page"><div class="card">
+<h3>Dashboard</h3>
+<p id="info"></p>
+<div class="progress"><div class="progress-bar" id="bar"></div></div>
 </div></div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="page">
-<div class="grid">
-<div class="card"><h3>User</h3><p id="u"></p></div>
-<div class="card"><h3>Role</h3><p id="r"></p></div>
-<div class="card"><h3>Ops</h3><p id="ops"></p></div>
-<div class="card"><h3>Cases</h3><p id="caseCount"></p></div>
-<div class="card"><h3>Alerts</h3><p id="alertCount"></p></div>
-</div></div>
-
-<!-- OPERATIONS -->
-<div id="operations" class="page">
-<div class="card">
-<h2>Mission Flow</h2>
+<div id="operations" class="page"><div class="card">
 <ul id="steps"></ul>
-<button class="action" onclick="nextStep()">Next</button>
+<button onclick="nextStep()">Next</button>
 <p id="status"></p>
 </div></div>
 
-<!-- CASES -->
-<div id="cases" class="page">
-<div class="card">
-<h2>Case System</h2>
-<input id="ct" placeholder="Title">
-<textarea id="cd"></textarea>
-<button class="action" onclick="addCase()">Add</button>
+<div id="cases" class="page"><div class="card">
+<input id="ct" placeholder="title"><textarea id="cd"></textarea>
+<button onclick="addCase()">Add</button>
 <div class="log" id="cl"></div>
+<div class="card" id="viewer"></div>
 </div></div>
 
-<!-- ALERTS -->
-<div id="alerts" class="page">
-<div class="card">
-<h2>Alert System</h2>
-<input id="at" placeholder="Alert">
-<button class="action" onclick="sendAlert()">Send</button>
+<div id="alerts" class="page"><div class="card">
+<input id="at"><button onclick="sendAlert()">Send</button>
 <div class="log" id="al"></div>
 </div></div>
 
-<!-- ADMIN PANEL -->
-<div id="admin" class="page">
-<div class="card">
-<h2>Admin Controls</h2>
-<button class="action" onclick="wipeData()">WIPE SYSTEM</button>
-<button class="action" onclick="generateFakeData()">Generate Test Data</button>
+<div id="map" class="page"><div class="card">
+<div class="map" id="mapBox"></div>
+</div></div>
+
+<div id="terminal" class="page"><div class="card">
+<div class="terminal" id="term"></div>
+<input id="cmd" placeholder="enter command" onkeydown="runCmd(event)">
+</div></div>
+
+<div id="admin" class="page"><div class="card">
+<button onclick="wipe()">WIPE</button>
 </div></div>
 
 <script>
-let currentUser=null,currentRole=null;
-let ops=Number(localStorage.getItem('ops'))||0;
-let steps=["Scan Area","Secure Zone","Equip Gear","Retrieve Binder","Seal Evidence","Log Mission"];
-let stepIndex=0;
+let userC=null,roleC=null,step=0;
+let steps=["Scan","Secure","Gear","Retrieve","Seal","Log"];
 
-function nav(p){if(!currentUser&&p!=='login'){alert('login first');return}
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');updateDash()}
+function nav(p){if(!userC&&p!=='login')return alert('login');
+if(p==='admin'&&roleC!=='Director')return alert('no access');
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+document.getElementById(p).classList.add('active');updateDash();}
 
-function register(){
-let u=user.value,p=pass.value,r=role.value;
-localStorage.setItem('user_'+u,JSON.stringify({p,r}));msg.textContent='Registered';
-}
+function register(){localStorage.setItem('u_'+user.value,JSON.stringify({p:pass.value,r:role.value}))}
+function login(){let d=JSON.parse(localStorage.getItem('u_'+user.value));
+if(d&&d.p===pass.value){userC=user.value;roleC=d.r;nav('dashboard')}else msg.textContent='bad';}
 
-function login(){
-let u=user.value,p=pass.value;
-let d=JSON.parse(localStorage.getItem('user_'+u));
-if(d&&d.p===p){currentUser=u;currentRole=d.r;nav('dashboard');}
-else msg.textContent='Invalid';
-}
+function updateDash(){if(!userC)return;
+info.textContent=userC+' ('+roleC+')';
+bar.style.width=(step/steps.length*100)+'%';}
 
-function updateDash(){
-if(!currentUser)return;
-u.textContent=currentUser;
-r.textContent=currentRole;
-opsEl();
-caseCount.textContent=(JSON.parse(localStorage.getItem('cases')||'[]')).length;
-alertCount.textContent=(JSON.parse(localStorage.getItem('alerts')||'[]')).length;
-}
+function renderSteps(){stepsEl.innerHTML='';steps.forEach((s,i)=>{
+let li=document.createElement('li');li.textContent=s;if(i<step)li.style.color='lime';stepsEl.appendChild(li)})}
 
-function opsEl(){ops=document.getElementById('ops');ops.textContent=localStorage.getItem('ops')||0}
+function nextStep(){if(step<steps.length){status.textContent=steps[step];playSound();step++;renderSteps();updateDash();}
+else{status.textContent='DONE';step=0}}
 
-function renderSteps(){stepsEl.innerHTML='';steps.forEach((s,i)=>{let li=document.createElement('li');li.textContent=s;if(i<stepIndex)li.style.color='lime';stepsEl.appendChild(li)})}
+function addCase(){let c=JSON.parse(localStorage.getItem('cases')||'[]');
+c.push({t:ct.value,d:cd.value});localStorage.setItem('cases',JSON.stringify(c));renderCases()}
 
-function nextStep(){
-if(stepIndex<steps.length){status.textContent=steps[stepIndex];stepIndex++;renderSteps()}
-else{status.textContent='MISSION COMPLETE';let o=Number(localStorage.getItem('ops')||0)+1;localStorage.setItem('ops',o);stepIndex=0;renderSteps();updateDash();}}
+function renderCases(){let c=JSON.parse(localStorage.getItem('cases')||'[]');cl.innerHTML='';
+c.forEach(x=>{let d=document.createElement('div');d.textContent=x.t;d.onclick=()=>viewCase(x);cl.appendChild(d)})}
 
-function addCase(){
-let t=ct.value,d=cd.value;
-let c=JSON.parse(localStorage.getItem('cases')||'[]');
-c.push({t,d,time:new Date().toLocaleString()});
-localStorage.setItem('cases',JSON.stringify(c));renderCases();updateDash();}
+function viewCase(c){viewer.innerHTML='<h3>'+c.t+'</h3><p>'+c.d+'</p>'}
 
-function renderCases(){
-let c=JSON.parse(localStorage.getItem('cases')||'[]');cl.innerHTML='';c.forEach(x=>{let div=document.createElement('div');div.textContent=x.time+' | '+x.t;cl.prepend(div)})}
+function sendAlert(){let a=JSON.parse(localStorage.getItem('alerts')||'[]');
+a.push(at.value);localStorage.setItem('alerts',JSON.stringify(a));renderAlerts();popup(at.value);playSound()}
 
-function sendAlert(){
-let t=at.value;let a=JSON.parse(localStorage.getItem('alerts')||'[]');
-a.push({t,time:new Date().toLocaleTimeString()});
-localStorage.setItem('alerts',JSON.stringify(a));renderAlerts();popupAlert(t);updateDash();}
+function renderAlerts(){let a=JSON.parse(localStorage.getItem('alerts')||'[]');al.innerHTML='';
+a.forEach(x=>{let d=document.createElement('div');d.textContent=x;al.appendChild(d)})}
 
-function renderAlerts(){
-let a=JSON.parse(localStorage.getItem('alerts')||'[]');al.innerHTML='';a.forEach(x=>{let d=document.createElement('div');d.textContent=x.time+' - '+x.t;al.prepend(d)})}
+function popup(t){popup.innerText=t;popup.style.display='block';setTimeout(()=>popup.style.display='none',2000)}
 
-function popupAlert(text){
-popup.textContent=text;popup.style.display='block';setTimeout(()=>popup.style.display='none',3000)}
+function wipe(){if(roleC!=='Director')return;localStorage.clear();location.reload()}
 
-function wipeData(){if(currentRole!=='Director')return alert('Director only');localStorage.clear();location.reload()}
+function playSound(){let ctx=new AudioContext();let o=ctx.createOscillator();o.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.1)}
 
-function generateFakeData(){
-for(let i=0;i<5;i++){addCase();sendAlert()}}
+function genMap(){for(let i=0;i<20;i++){let dot=document.createElement('div');dot.className='dot';dot.style.left=Math.random()*100+'%';dot.style.top=Math.random()*100+'%';mapBox.appendChild(dot)}}
 
-renderSteps();renderCases();renderAlerts();
+function runCmd(e){if(e.key==='Enter'){let t=cmd.value;let div=document.createElement('div');div.textContent='> '+t;term.appendChild(div);
+if(t==='help'){term.appendChild(document.createTextNode('commands: help, clear'))}
+if(t==='clear'){term.innerHTML=''}cmd.value='';}}
+
+renderSteps();renderCases();renderAlerts();genMap();
 </script>
 </body>
 </html>
