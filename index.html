@@ -3,129 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KKIA Control Panel</title>
+<title>KKIA Advanced System</title>
 
 <style>
 :root {
-    --primary: #6a11cb;
-    --secondary: #2575fc;
-    --accent: #00c9a7;
-    --danger: #ff4d4d;
+  --primary:#6a11cb;--secondary:#2575fc;--accent:#00c9a7;--danger:#ff4d4d;
 }
-
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #1e1e2f, #2b5876);
-    color: white;
-}
-
-header {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    padding: 20px;
-    text-align: center;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    background: rgba(0,0,0,0.4);
-    padding: 10px;
-}
-
-nav button {
-    background: transparent;
-    border: 2px solid white;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-nav button:hover {
-    background: white;
-    color: black;
-}
-
-.page {
-    display: none;
-    padding: 20px;
-}
-
-.active {
-    display: block;
-}
-
-.card {
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 12px;
-    margin: 15px auto;
-    max-width: 600px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-}
-
-input, textarea, select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: none;
-}
-
-button.action {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    border: none;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-button.action:hover {
-    opacity: 0.8;
-}
-
-.log {
-    max-height: 200px;
-    overflow-y: auto;
-    background: black;
-    padding: 10px;
-    font-size: 14px;
-}
-
-.badge {
-    padding: 5px 10px;
-    border-radius: 6px;
-    background: var(--accent);
-}
-
+body{margin:0;font-family:Segoe UI;background:linear-gradient(135deg,#1e1e2f,#2b5876);color:white}
+header{background:linear-gradient(90deg,var(--primary),var(--secondary));padding:15px;text-align:center;font-size:24px}
+nav{display:flex;gap:10px;justify-content:center;background:rgba(0,0,0,.4);padding:10px}
+nav button{background:none;border:1px solid white;color:white;padding:6px 12px;border-radius:6px;cursor:pointer}
+nav button:hover{background:white;color:black}
+.page{display:none;padding:20px}.active{display:block}
+.card{background:rgba(255,255,255,.1);padding:20px;border-radius:12px;margin:10px auto;max-width:700px}
+input,textarea,select{width:100%;margin:8px 0;padding:8px;border-radius:6px;border:none}
+button.action{background:linear-gradient(90deg,var(--primary),var(--secondary));border:none;color:white;padding:8px;border-radius:6px;cursor:pointer}
+.log{background:black;max-height:150px;overflow:auto;padding:8px}
+.badge{background:var(--accent);padding:3px 8px;border-radius:5px}
+canvas{background:white;border-radius:10px}
 </style>
 </head>
-
 <body>
-
-<header>KKIA CONTROL PANEL</header>
+<header>KKIA ADVANCED SYSTEM</header>
 
 <nav>
-<button onclick="showPage('login')">Login</button>
-<button onclick="showPage('dashboard')">Dashboard</button>
-<button onclick="showPage('operations')">Operations</button>
-<button onclick="showPage('reports')">Reports</button>
-<button onclick="showPage('settings')">Settings</button>
+<button onclick="nav('login')">Login</button>
+<button onclick="nav('dashboard')">Dashboard</button>
+<button onclick="nav('operations')">Operations</button>
+<button onclick="nav('cases')">Cases</button>
+<button onclick="nav('alerts')">Alerts</button>
 </nav>
 
 <!-- LOGIN -->
 <div id="login" class="page active">
 <div class="card">
-<h2>Login</h2>
+<h2>Register / Login</h2>
 <input id="user" placeholder="Username">
 <input id="pass" type="password" placeholder="Password">
+<select id="role">
+<option>Agent</option>
+<option>Admin</option>
+<option>Director</option>
+</select>
+<button class="action" onclick="register()">Register</button>
 <button class="action" onclick="login()">Login</button>
-<p id="loginMsg"></p>
+<p id="msg"></p>
 </div>
 </div>
 
@@ -133,117 +55,137 @@ button.action:hover {
 <div id="dashboard" class="page">
 <div class="card">
 <h2>Dashboard</h2>
-<p>Status: <span class="badge">Active</span></p>
-<p>Operations Completed: <span id="opsCount">0</span></p>
+<p>User: <span id="currentUser"></span></p>
+<p>Role: <span id="currentRole" class="badge"></span></p>
+<p>Operations Completed: <span id="ops">0</span></p>
+<canvas id="chart" width="300" height="150"></canvas>
 </div>
 </div>
 
 <!-- OPERATIONS -->
 <div id="operations" class="page">
 <div class="card">
-<h2>Operation Steps</h2>
+<h2>Operations</h2>
 <ul id="steps"></ul>
 <button class="action" onclick="nextStep()">Next Step</button>
-<p id="opStatus"></p>
+<p id="status"></p>
 </div>
 </div>
 
-<!-- REPORTS -->
-<div id="reports" class="page">
+<!-- CASE FILE SYSTEM -->
+<div id="cases" class="page">
 <div class="card">
-<h2>Create Report</h2>
-<textarea id="reportText" placeholder="Write report..."></textarea>
-<button class="action" onclick="saveReport()">Save Report</button>
-<div class="log" id="reportLog"></div>
+<h2>Case Files</h2>
+<input id="caseTitle" placeholder="Case Title">
+<textarea id="caseDesc" placeholder="Description"></textarea>
+<button class="action" onclick="addCase()">Add Case</button>
+<div class="log" id="caseLog"></div>
 </div>
 </div>
 
-<!-- SETTINGS -->
-<div id="settings" class="page">
+<!-- ALERTS -->
+<div id="alerts" class="page">
 <div class="card">
-<h2>Settings</h2>
-<select onchange="changeTheme(this.value)">
-<option value="dark">Dark</option>
-<option value="light">Light</option>
-</select>
+<h2>Live Alerts</h2>
+<input id="alertText" placeholder="Alert message">
+<button class="action" onclick="sendAlert()">Send Alert</button>
+<div class="log" id="alertLog"></div>
 </div>
 </div>
 
 <script>
-let loggedIn = false;
-let stepIndex = 0;
-let opsCompleted = 0;
+let currentUser=null;let currentRole=null;
+let stepIndex=0;let ops=Number(localStorage.getItem('ops'))||0;
+const steps=["Locate binder","Secure area","Wear gear","Retrieve binder","Seal container","Document evidence"];
 
-const stepsData = [
-"Locate binder",
-"Secure area",
-"Wear gear",
-"Retrieve binder",
-"Seal container",
-"Document evidence"
-];
+function nav(p){if(!currentUser&&p!=='login'){alert('login first');return}
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');renderChart()}
 
-function showPage(page) {
-    if (!loggedIn && page !== 'login') return alert('Login first');
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(page).classList.add('active');
+function register(){
+let u=user.value,p=pass.value,r=role.value;
+if(!u||!p)return;
+localStorage.setItem('user_'+u,JSON.stringify({pass:p,role:r}));
+msg.textContent='Registered!';
 }
 
-function login() {
-    if(document.getElementById('user').value === 'admin' && document.getElementById('pass').value === 'binder123'){
-        loggedIn = true;
-        showPage('dashboard');
-    } else {
-        document.getElementById('loginMsg').textContent = 'Invalid login';
-    }
+function login(){
+let u=user.value,p=pass.value;
+let data=JSON.parse(localStorage.getItem('user_'+u));
+if(data&&data.pass===p){
+currentUser=u;currentRole=data.role;
+currentUserSpan();
+nav('dashboard');
+}else msg.textContent='Invalid';
 }
 
-function renderSteps() {
-    const ul = document.getElementById('steps');
-    ul.innerHTML = '';
-    stepsData.forEach((step, i) => {
-        const li = document.createElement('li');
-        li.textContent = step;
-        if(i < stepIndex) li.style.color = 'lime';
-        ul.appendChild(li);
-    });
+function currentUserSpan(){
+document.getElementById('currentUser').textContent=currentUser;
+document.getElementById('currentRole').textContent=currentRole;
+document.getElementById('ops').textContent=ops;
 }
 
-function nextStep() {
-    if(stepIndex < stepsData.length) {
-        document.getElementById('opStatus').textContent = "Executing: " + stepsData[stepIndex];
-        stepIndex++;
-        renderSteps();
-    } else {
-        document.getElementById('opStatus').textContent = "Operation Complete";
-        opsCompleted++;
-        document.getElementById('opsCount').textContent = opsCompleted;
-        stepIndex = 0;
-        renderSteps();
-    }
+function renderSteps(){
+stepsEl.innerHTML='';
+steps.forEach((s,i)=>{
+let li=document.createElement('li');li.textContent=s;
+if(i<stepIndex)li.style.color='lime';
+stepsEl.appendChild(li);
+});}
+
+function nextStep(){
+if(stepIndex<steps.length){
+status.textContent=steps[stepIndex];stepIndex++;renderSteps();
+}else{
+status.textContent='Complete';
+ops++;localStorage.setItem('ops',ops);
+stepIndex=0;renderSteps();currentUserSpan();
+}
 }
 
-function saveReport() {
-    const text = document.getElementById('reportText').value;
-    if(!text) return;
-    const log = document.getElementById('reportLog');
-    const entry = document.createElement('div');
-    entry.textContent = new Date().toLocaleString() + ": " + text;
-    log.prepend(entry);
+function addCase(){
+let t=caseTitle.value,d=caseDesc.value;
+if(!t)return;
+let cases=JSON.parse(localStorage.getItem('cases')||'[]');
+cases.push({t,d,date:new Date().toLocaleString()});
+localStorage.setItem('cases',JSON.stringify(cases));
+renderCases();
 }
 
-function changeTheme(mode) {
-    if(mode === 'light') {
-        document.body.style.background = '#f5f5f5';
-        document.body.style.color = 'black';
-    } else {
-        document.body.style.background = 'linear-gradient(135deg, #1e1e2f, #2b5876)';
-        document.body.style.color = 'white';
-    }
+function renderCases(){
+let cases=JSON.parse(localStorage.getItem('cases')||'[]');
+caseLog.innerHTML='';
+cases.forEach(c=>{
+let div=document.createElement('div');
+div.textContent=c.date+' | '+c.t+' - '+c.d;
+caseLog.prepend(div);
+});}
+
+function sendAlert(){
+let text=alertText.value;
+if(!text)return;
+let alerts=JSON.parse(localStorage.getItem('alerts')||'[]');
+alerts.push({text,time:new Date().toLocaleTimeString()});
+localStorage.setItem('alerts',JSON.stringify(alerts));
+renderAlerts();
 }
 
-renderSteps();
+function renderAlerts(){
+let alerts=JSON.parse(localStorage.getItem('alerts')||'[]');
+alertLog.innerHTML='';
+alerts.forEach(a=>{
+let div=document.createElement('div');
+div.textContent=a.time+' - '+a.text;
+alertLog.prepend(div);
+});}
+
+function renderChart(){
+let ctx=document.getElementById('chart');if(!ctx)return;
+let c=ctx.getContext('2d');
+c.clearRect(0,0,300,150);
+c.fillText('Operations: '+ops,50,50);
+}
+
+renderSteps();renderCases();renderAlerts();
 </script>
-
 </body>
 </html>
