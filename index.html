@@ -1,0 +1,134 @@
+!-- Language: HTML -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binder Securing Operation with Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input[type="text"], input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3498db;
+        }
+        .hidden {
+            display: none;
+        }
+        ul.steps {
+            list-style-type: decimal;
+            padding-left: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Binder Securing Operation</h1>
+    </header>
+
+    <!-- Login Form -->
+    <div class="container" id="loginContainer">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username"><br>
+        <input type="password" id="password" placeholder="Password"><br>
+        <button id="loginBtn">Login</button>
+        <p id="loginMessage" class="hidden" style="color:red;"></p>
+    </div>
+
+    <!-- Operation Steps (hidden initially) -->
+    <div class="container hidden" id="operationContainer">
+        <h2>Step-by-Step Procedure</h2>
+        <ul class="steps" id="steps-list">
+            <li>Identify the binder location.</li>
+            <li>Ensure the area is safe and secure.</li>
+            <li>Wear proper protective gear.</li>
+            <li>Carefully take down the binder.</li>
+            <li>Secure binder in approved container.</li>
+            <li>Document the operation for audit purposes.</li>
+        </ul>
+        <button id="startBtn">Start Operation</button>
+        <p id="statusMessage" class="hidden"></p>
+    </div>
+
+    <script>
+        // Simple login system (static credentials)
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginMessage = document.getElementById('loginMessage');
+        const loginContainer = document.getElementById('loginContainer');
+        const operationContainer = document.getElementById('operationContainer');
+
+        const validUsername = "admin";
+        const validPassword = "binder123";
+
+        loginBtn.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if(username === validUsername && password === validPassword) {
+                loginContainer.classList.add('hidden');
+                operationContainer.classList.remove('hidden');
+            } else {
+                loginMessage.textContent = "Invalid username or password";
+                loginMessage.classList.remove('hidden');
+            }
+        });
+
+        // JavaScript to handle operation step-by-step flow
+        const startBtn = document.getElementById('startBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const steps = document.querySelectorAll('#steps-list li');
+        let currentStep = 0;
+
+        startBtn.addEventListener('click', () => {
+            if(currentStep < steps.length) {
+                statusMessage.textContent = `Executing: ${steps[currentStep].textContent}`;
+                statusMessage.classList.remove('hidden');
+                currentStep++;
+                startBtn.textContent = currentStep < steps.length ? "Next Step" : "Complete Operation";
+            } else {
+                statusMessage.textContent = "Operation successfully completed and binder secured.";
+                startBtn.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
